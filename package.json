@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@dashevo/dashd-rpc": "^2.3.2",
+    "@dashevo/wallet-lib": "^7.22.1",
+    "bls-signatures": "^0.2.5"
+  }
+}

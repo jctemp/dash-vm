@@ -128,3 +128,16 @@ vagrant@ubuntu-focal:~$
 
 - attempts to shut down guest OS and power down the machine
 - it is a clean shut down preserve information on the disk
+
+### Snapshots
+
+`vagrant snapshot push`
+
+- create a snapshot of every VM
+- if one uses save instead push is not save to use
+
+`vagrant snapshot pop`
+
+- inverse function of push
+
+`vagrant snapshot list`

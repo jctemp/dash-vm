@@ -101,6 +101,7 @@ function rpc() {
         --user dashrpc:password \
         --data-binary '{ "jsonrpc": "1.0", "id":"rpc", "method": '\""$cmd"\"', "params": ['"${args%,}"'] }' \
         -H 'content-type: text/plain;' http://10.0.0.10:19998/
+    # /wallet/<wallet-name>
 }
 
 # Generates blocks in the network until the amount of blocks is reached. The seed node
@@ -158,6 +159,8 @@ function confirm() {
     local output
     output=$(confirmations "$1")
     while [ "$output" -lt 1 ]; do
+        rpc mnsync reset >/dev/null
+        sync >/dev/null
         rpc generate 1 >/dev/null
         sleep 1
         output=$(confirmations "$1")
@@ -361,6 +364,19 @@ function seednode() {
         return
     fi
 
+    # CRON JOB
+    crontab -l >cronJobs
+
+    if ! grep -e sentinel cronJobs >/dev/null; then
+        echo "*/1 * * * * pgrep dashd && /usr/local/bin/dash-cli generate 1 " >>cronJobs &&
+            echo "Successfully installed 3 min mining interval cron job."
+    else
+        echo "> 3 min mining interval cron job already installed."
+    fi
+
+    crontab cronJobs
+    rm cronJobs
+
     echo "[${FUNCNAME[0]}]: Starting seed node setup..."
     sync
     generate $((1200 * "$1"))
@@ -490,11 +506,17 @@ function masternode() {
 
     local dump
 
+    echo "[${FUNCNAME[0]}]:" "> Wait for Masternode to appear in list"
+
     while ! dump=$(masternode_in_list "$json_string" >/dev/null); do
         echo "$dump" >/dev/null
+        rpc mnsync reset >/dev/null
+        sync >/dev/null
         mint 2 >/dev/null
         sleep 2
     done
+
+    echo "[${FUNCNAME[0]}]:" "> Restart node as Masternode"
 
     sed -i 's/# masternodeblsprivkey=/masternodeblsprivkey='"$bls_private_key"'/' ~/.dashcore/dash.conf
     dash-cli stop
