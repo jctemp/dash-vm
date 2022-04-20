@@ -33,5 +33,5 @@ Vagrant.configure("2") do |config|
 
   # Enable provisioning with a shell script for all machines
   # path is relative to project directory (where Vagrantfile is)
-  config.vm.provision "shell", path: "provision.sh"
+  config.vm.provision "shell", path: "shell-scripts/provision.sh"
 end

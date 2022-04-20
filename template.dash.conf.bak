@@ -32,12 +32,12 @@ zmqpubrawtxlocksig=tcp://0.0.0.0:29998
 # ---------------------------------------------------------------------------------------
 
 # masternodeblsprivkey=
-# externalip=
+externalip=
 
 # ---------------------------------------------------------------------------------------
 
-sporkkey=cP4EKFyJsHT39LDqgdcB43Y3YXjNyjb5Fuas1GQSeAtjnZWmZEQK
-sporkaddr=yj949n1UH6fDhw6HtVE5VMj2iSTaSWBMcW
+# sporkkey=
+# sporkaddr=
 
 # ---------------------------------------------------------------------------------------
 
