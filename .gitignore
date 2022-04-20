@@ -1,2 +1,8 @@
-.vagrant/
-.code
+.vagrant
+__pycache__
+node_modules
+.DS_Store
+package-lock.json
+*.egg-info
+platform_wallets.json
+ablauf.txt
