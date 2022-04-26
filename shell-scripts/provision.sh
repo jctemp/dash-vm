@@ -97,8 +97,6 @@ fi
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-# TODO: FIX APPENDING EXPORTS TO /etc/profile OR SOMETHING
-
 if [ ! -d /usr/local/go ]; then
     msg_start "Installing go"
 
@@ -109,20 +107,10 @@ if [ ! -d /usr/local/go ]; then
     # TODO: make this configurable or use $HOME => provisioning with vagrant uses "root" as user, hence $HOME does not work
     target="/home/vagrant"
 
-    # if text in file already, do nothing
-    if ! grep -q "GOPATH" "$target/.profile"; then
-
-        cat <<EOF | sudo tee -a "$target/.profile"
-# go envrioment variables for the .bashrc file
-if [ -d /usr/local/go ]; then
-    export GOROOT="/usr/local/go"
-    export GOPATH="$HOME/go"
-    export PATH="$PATH:$GOROOT/bin:$GOPATH/bin"
-fi
-EOF
-
-    fi
-
+    cp "$target/.profile" "$target/.profile.tmp"
+    mv "$target/.profile" "$target/.profile.bak"
+    printf 'if [ -d /usr/local/go ]; then\n  GOROOT="/usr/local/go"\n  GOPATH="$HOME/go"\n  PATH="$PATH:$GOROOT/bin:$GOPATH/bin"\nfi\n' >> "$target/.profile.tmp"
+    mv "$target/.profile.tmp" "$target/.profile"
     source "$target/.profile"
 
     msg_finished "Go installed at $(which go)"
