@@ -14,8 +14,7 @@ An automation tool to create a dash network.
 ```
 # 1)
 cd
-python3 -m venv dashup
-source dashup/bin/activate
+python3 -m venv dashup && source dashup/bin/activate
 pip install --editable /vagrant
 
 # 2) use program
