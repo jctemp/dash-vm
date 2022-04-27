@@ -21,12 +21,6 @@ def setup() -> None:
         local_settings = {"wallet": "", "address": "",
                           "port": "", "username": "", "password": ""}
 
-        rpc.stop(local_settings)
-        time.sleep(2)
-        rpc.start()
-        rpc.sync(local_settings)
-        rpc.test()
-
         extern_settings = {"wallet": "", "address": "10.0.0.10",
                            "port": 19998, "username": "", "password": ""}
 
@@ -45,11 +39,6 @@ def setup() -> None:
                   address_data, config_data, protx_data)
 
         install_sentinel("/vagrant/downloads.json")
-
-        rpc.stop(local_settings)
-        time.sleep(2)
-        rpc.start()
-        rpc.sync(local_settings)
 
     except rpc.RPCException as e:
         utils.error("Setup failed: ")

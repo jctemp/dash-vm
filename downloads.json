@@ -1,5 +1,5 @@
 {
-    "core": "https://github.com/dashpay/dash/releases/download/v0.17.0.3/dashcore-0.17.0.3-x86_64-linux-gnu.tar.gz",
+    "core": "https://github.com/dashpay/dash/releases/download/v18.0.0.0-rc3/dashcore-18.0.0.0-rc3-x86_64-linux-gnu.tar.gz",
     "golang" : "https://go.dev/dl/go1.18.1.linux-amd64.tar.gz",
     "tenderdash": {
         "url": "https://github.com/dashevo/tenderdash.git",
@@ -7,7 +7,7 @@
     },
     "platform" : {
         "url": "https://github.com/dashevo/platform.git",
-        "branch": "v0.22.1"
+        "branch": "v0.22.2"
     },
     "sentienl": {
         "url": "https://github.com/dashpay/sentinel.git",

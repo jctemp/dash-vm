@@ -13,18 +13,13 @@ def setup() -> None:
                    "port": 19998, "username": "dashrpc", "password": "password"}
 
     try:
-        time.sleep(2)
-        rpc.start()
-        rpc.sync(rpcsettings)
-        rpc.test(rpcsettings)
-
-        install_mongod()
+        # install_mongod()
         platform_settings = generate_platform_settings(rpcsettings)
         install_tenderdash("/vagrant/downloads.json", platform_settings)
-        get_platform("/vagrant/downloads.json")
+        # get_platform("/vagrant/downloads.json")
         install_drive(platform_settings)
         install_dapi(platform_settings)
-        # TODO: envoy https://www.envoyproxy.io/docs/envoy/latest/start/install
+        # # TODO: envoy https://www.envoyproxy.io/docs/envoy/latest/start/install
     except rpc.RPCException as e:
         utils.error(e.response)
         utils.hline()
@@ -50,10 +45,9 @@ def generate_platform_settings(rpcsettings: dict = None) -> dict:
         "rpc_port": rpcsettings["port"],
         "rpc_user": rpcsettings["username"],
         "rpc_password": rpcsettings["password"],
-        "quorum_type": 101,
+        "quorum_type": "101",
         "chainlock_height": 0,
-        "network_name": "",
-        "genesis_time": "2022-04-19T10:44:45.681598924Z"
+        "network_name": ""
     }
 
     config = os.path.expanduser(r"~/.dashcore/dash.conf")
@@ -100,7 +94,7 @@ def install_mongod() -> None:
         '''mongo<<<"rs.initiate({_id:'driveDocuments',version: 1,members:[{_id: 0,host: 'localhost:27017',},],});"''')
 
 
-def install_tenderdash(downloads: str, platform_settings: dict) -> None:
+def install_tenderdash(downloads: str, platform_settings) -> None:
     '''
     Install tenderdash
     '''
@@ -172,7 +166,6 @@ def install_tenderdash(downloads: str, platform_settings: dict) -> None:
         genesis["chain_id"] = platform_settings["network_name"]
         genesis["initial_core_chain_locked_height"] = platform_settings["chainlock_height"]
         genesis["quorum_type"] = str(platform_settings["quorum_type"])
-        genesis["genesis_time"] = str(platform_settings["genesis_time"])
 
         with open(os.path.expanduser("~/.tenderdash/config/genesis.json"), "w") as f:
             json.dump(genesis, f, indent=4)

@@ -8,12 +8,6 @@ def setup() -> None:
                    "port": 19998, "username": "dashrpc", "password": "password"}
 
     try:
-        rpc.stop(rpcsettings)
-        time.sleep(2)
-        rpc.start()
-        rpc.sync(rpcsettings)
-        rpc.test(rpcsettings)
-
         activate_sporks(rpcsettings)
         wait_for_quorum(rpcsettings)
         wait_for_chainlock(rpcsettings)
