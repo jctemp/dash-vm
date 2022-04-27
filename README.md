@@ -11,26 +11,105 @@ An automation tool to create a dash network.
 
 ## Usage
 
+Start to spawn virtual machines with the following command. You need to be in the root of the project.
+
 ```
-# 1)
-cd
-python3 -m venv dashup && source dashup/bin/activate
+vagrant up
+```
+
+Now you can ssh to the machines with the following command.
+
+```
+vagrant ssh <node-name>
+```
+
+Install the dashup program on every node of the network.
+
+```bash
+# create virtual env for python3 and install dashup
+python3 -m venv ~/dashup && source ~/dashup/bin/activate
 pip install --editable /vagrant
 
-# 2) use program
+# if it exists already, do
+source ~/dashup/bin/activate
+```
 
-# get info
-dashup
+### Layer 1
 
+To setup a node in the network you have to run the following command:
+```
 dashup core
+```
+This will install core and all dependencies. It is important that you take care of doing this only on the seednode first because the seednode takes care of preparing keys for the network. Therefore you have to run this command on the seednode first.
+
+```
 dashup seednode
+```
+It will generate keys and wallets as funds for the masternode. After you have run this command you can run `dashup core` on the other nodes.
 
-dashup core
+Now you can create masternodes in the network. However, you have to check if the seednode is running first. For this just run `dash-cli uptime` on the seednode. If the output is not an error then the seednode is running, hence you can run the following command:
+```
 dashup masternode
+```
 
-dashup platform seednode
-dashup platform masternode
+Here are output examples:
 
+```bash
+# Core install output
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Setting up dashd
+[INFO] Installing dashd
+[INFO] Setting dashd configuration file
+[INFO] Possible ip addresses:
+   1) 10.0.2.15
+   2) 10.0.0.10
+   3) 172.17.0.1
+[WARNING] USER INPUT REQUIRED
+Select interface to use [1-3]: 2
+[INFO] SELECTED 10.0.0.10
+no crontab for vagrant
+[OK] Setup complete
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# Seednode install output
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Seednode setup
+[INFO] Setting up seednode
+[INFO] Generating sporks
+[INFO] Writing sporks.json
+[INFO] Generating platform keys
+[INFO] Writing platform_wallets.json
+How many masternodes do you want to create?
+[WARNING] USER INPUT REQUIRED
+Count: 7
+[OK] Setup complete
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# Masternode install output
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Masternode setup
+[INFO] Setting up masternode
+[INFO] Creating collateral
+[INFO] Generating bls key
+[INFO] Generating and funding addresses
+[INFO] Retrieving config of machine
+[INFO] ProTx registration
+[INFO] Waiting for node to appear in masternode list
+[INFO] Set bls key in config
+[INFO] Installing sentinel
+
+...
+
+[OK] Setup complete
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+### Layer 2
+
+Todo: Add description
+
+```bash
+# TODO
 . /vagrant/shell-scripts/service_helper.sh --source-only
 
 drive_fork&
@@ -51,14 +130,9 @@ grpcurl -plaintext -proto protos/core/v0/core.proto \
 
 ```
 
-## STEPS
-
-1) Create Seednode
-2) Create Masternode
-3) do platform seednode
-4) do platform masternode
-
 ---
+---
+
 
 ## Vagrant and Virtual Machines
 
