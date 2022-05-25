@@ -1,0 +1,1 @@
+#!/usr/bin/python3import refrom string import Templateclass TemplateHash(Template):    delimiter = "#"def core(src_file: str, dest_file, values: dict):    content: str = ""    with open(src_file, "r") as f:        content = f.read()    s = TemplateHash(content)    content = s.safe_substitute(values)    with open(dest_file, "w") as f:        f.write(content)

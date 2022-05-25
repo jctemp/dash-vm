@@ -45,10 +45,11 @@ sudo apt install -y debian-keyring \
     git curl wget vim ca-certificates \
     gnupg lsb-release build-essential ripgrep \
     cmake libgmp-dev libzmq3-dev jq \
-    python3 python3-pip python3-virtualenv
+    python3 python3-pip python3-virtualenv gcc-10 g++-10 \
+    gnupg2 
 sudo apt autoremove
 
-git config --global advice.detachedHead false
+git config --global advice.detachedHead true
 pip install --upgrade pip
 apt install python3.8-venv
 
@@ -97,24 +98,24 @@ fi
 
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-if [ ! -d /usr/local/go ]; then
-    msg_start "Installing go"
+# if [ ! -d /usr/local/go ]; then
+#     msg_start "Installing go"
 
-    curl -LO https://go.dev/dl/go1.18.1.linux-amd64.tar.gz
-    sudo tar -C /usr/local -xzf go1.18.1.linux-amd64.tar.gz
-    rm go1.18.1.linux-amd64.tar.gz
+#     curl -LO https://go.dev/dl/go1.18.1.linux-amd64.tar.gz
+#     sudo tar -C /usr/local -xzf go1.18.1.linux-amd64.tar.gz
+#     rm go1.18.1.linux-amd64.tar.gz
 
-    # TODO: make this configurable or use $HOME => provisioning with vagrant uses "root" as user, hence $HOME does not work
-    target="/home/vagrant"
+#     # TODO: make this configurable or use $HOME => provisioning with vagrant uses "root" as user, hence $HOME does not work
+#     target="/home/vagrant"
 
-    cp "$target/.profile" "$target/.profile.tmp"
-    mv "$target/.profile" "$target/.profile.bak"
-    printf 'if [ -d /usr/local/go ]; then\n  GOROOT="/usr/local/go"\n  GOPATH="$HOME/go"\n  PATH="$PATH:$GOROOT/bin:$GOPATH/bin"\nfi\n' >> "$target/.profile.tmp"
-    mv "$target/.profile.tmp" "$target/.profile"
-    source "$target/.profile"
+#     cp "$target/.profile" "$target/.profile.tmp"
+#     mv "$target/.profile" "$target/.profile.bak"
+#     printf 'if [ -d /usr/local/go ]; then\n  GOROOT="/usr/local/go"\n  GOPATH="$HOME/go"\n  PATH="$PATH:$GOROOT/bin:$GOPATH/bin"\nfi\n' >> "$target/.profile.tmp"
+#     mv "$target/.profile.tmp" "$target/.profile"
+#     source "$target/.profile"
 
-    msg_finished "Go installed at $(which go)"
-fi
+#     msg_finished "Go installed at $(which go)"
+# fi
 
 sudo apt autoremove
 

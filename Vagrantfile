@@ -5,7 +5,7 @@
 BOX_IMAGE = "ubuntu/focal64"
 
 # Set the amount of nodes to create with seed node
-NETWORK_SIZE = 7
+NETWORK_SIZE = 0
 
 Vagrant.configure("2") do |config|
 
@@ -33,5 +33,5 @@ Vagrant.configure("2") do |config|
 
   # Enable provisioning with a shell script for all machines
   # path is relative to project directory (where Vagrantfile is)
-  config.vm.provision "shell", path: "shell-scripts/provision.sh"
+  config.vm.provision "shell", path: "provision.sh"
 end
