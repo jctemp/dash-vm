@@ -1,26 +1,48 @@
-from textual.app import App
-from textual.widgets import Footer, Placeholder
+from rich import traceback
+traceback.install()
 
-class SmoothApp(App):
-    """Demonstrates smooth animation. Press 'b' to see it in action."""
+import sys
+import os
 
-    def on_key(self, event):
-        if event.key.isdigit():
-            self.background = f"on color({event.key})"
-
-    async def on_load(self) -> None:
-        """Bind keys here."""
-        await self.bind("q", "quit", "Quit")
-
-    async def on_mount(self) -> None:
-        """Build layout here."""
-        footer = Footer()
-
-        await self.view.dock(footer, edge="bottom")
-        await self.view.dock(Placeholder(), edge="left", size=40)
-        await self.view.dock(Placeholder(), edge="right")
-
-        # self.set_timer(10, lambda: self.action("quit"))b
+# create a command line interface application
+from rich.console import Console
+from rich.text import Text
+from rich.prompt import Prompt
+from rich.syntax import Syntax
+from rich.style import Style
 
 
-SmoothApp.run(log="textual.log", log_verbosity=2)
+# there are three options for the options parameter:
+# - seednode: inital node to setup a devnet
+# - masternode: create a masternode for a devnet
+# - fullnode: vanilla dash fullnode
+
+# display menu with options
+def display_menu(options: dict) -> None:
+    console = Console(color_system="auto")
+    # "[bold red]Dashup - Simple Devnet Setup"
+
+    # create a window
+
+
+    console.print(Text("Choose an option:", style="bold blue"))
+    for key, value in options.items():
+        console.print(f"[green]{key}:[/] [i dim]{value}[/]")
+
+
+
+# display_menu({
+#     "seednode": "inital node to setup a devnet",
+#     "masternode": "create a masternode for a devnet", 
+#     "fullnode": "vanilla dash fullnode"
+# })
+
+from rich import print
+from rich.columns import Columns
+
+if len(sys.argv) < 2:
+    print("Usage: python columns.py DIRECTORY")
+else:
+    directory = os.listdir(sys.argv[1])
+    columns = Columns(directory, equal=True, expand=True)
+    print(columns)
