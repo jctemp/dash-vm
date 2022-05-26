@@ -15,9 +15,6 @@ class Client:
         self.url = f"https://{host}:{port}"
         self.headers = {'content-type': 'application/json', 'Authorization': f"Basic {self.username}:{self.password}"}
 
-    def set_url(self, host: str, port: int):
-        self.url = f"https://{host}:{port}"
-
     def request(self, payload: dict, wallet_name: str = None) -> Response:
         """
         Send request to RPC server

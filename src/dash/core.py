@@ -1,13 +1,17 @@
-from src.utils.download import download
-from src.utils.command import command
-from src.utils.extract import extract
-
-from src.utils.templater import core as core_template
-from src.templates.dashconf import config as dash_conf
-
-import os, shutil
-
+import os
+import shutil
 from dataclasses import dataclass
+
+from src.templates.dashconf import config as dash_conf
+from src.utils.command import command
+from src.utils.download import download
+from src.utils.extract import extract
+from src.utils.templater import core as core_template
+
+from rich.progress import Console
+from rich.traceback import install as install_traceback
+
+install_traceback()
 
 
 @dataclass
@@ -24,31 +28,48 @@ def core(data: Dash) -> None:
     Downloads and installs layer 1 on localhost
     """
 
-    # # currently hardcoded but should be dynamic in the future
-    # url = "https://github.com/dashpay/dash/releases/download/v18.0.0-rc4"
-    # filename = "dashcore-18.0.0-rc4-{}-linux-gnu.tar.gz".format(command("uname -m"))
+    with Console().status("Installing Layer 1", spinner="arc") as console:
 
-    # download(url, filename)
-    # extract(filename)
-    # command("sudo install -t /usr/local/bin dashcore-*/bin/*")
+        # currently hardcoded but should be dynamic in the future
+        url = "https://github.com/dashpay/dash/releases/download/v18.0.0-rc4"
+        filename = "dashcore-18.0.0-rc4-{}-linux-gnu.tar.gz".format(command("uname -m"))
 
-    # target = os.path.expanduser("~/.dashcore")
+        working = os.path.expanduser("./tmp")
 
-    # if os.path.exists(target):
-    #     shutil.rmtree(target)
+        if os.path.exists(working):
+            shutil.rmtree(working)
 
-    # os.mkdir(os.path.expanduser("~/.dashcore"))
-    # os.chdir(os.path.expanduser("~/.dashcore"))
+        os.mkdir(working)
+        os.chdir(working)
 
-    values = {
-        "externalip": data.externalip,
-        "sporkaddr": data.sporkaddr,
-        "sporkkey": data.sporkkey,
-        "masternodeblsprivkey": data.masternodeblsprivkey,
-        "addnode": data.addnode
-    }
+        download(url, filename)
+        extract(filename)
+        console.stop()
+        command("sudo install -t /usr/local/bin dashcore-*/bin/*")
+        console.start()
 
-    core_template(dash_conf, "dash.conf", values)
+        os.chdir("..")
+        shutil.rmtree(working)
+
+        target = os.path.expanduser("~/.dashcore")
+
+        if os.path.exists(target):
+            shutil.rmtree(target)
+
+        os.mkdir(target)
+        os.chdir(target)
+
+        values = {}
+        for key, value in data.__dict__.items():
+            if value is not None:
+                # join values with \n if they are lists
+                if isinstance(value, list):
+                    value = "\n".join("{}={}:19999".format(key, item) for item in value)
+                    values[key] = value
+                else:
+                    values[key] = "{}={}".format(key, value)
+
+        core_template(dash_conf, "./dash.conf", values)
 
 
-core(Dash())
+core(Dash(externalip="10.0.0.10"))

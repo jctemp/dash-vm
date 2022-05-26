@@ -2,6 +2,6 @@ import tarfile
 
 
 def extract(filename: str) -> None:
-    tar = tarfile.open(filename)
-    tar.extractall()
-    tar.close()
+
+    with tarfile.open(filename, "r:gz") as tar:
+        tar.extractall()
