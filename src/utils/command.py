@@ -10,4 +10,4 @@ def command(cmd: str) -> str:
     if code == 0:
         return out.decode("utf-8").strip()
 
-    raise Exception("Error: {}".format(err.decode("utf-8").strip()))
+    raise AssertionError("Error: {}".format(err.decode("utf-8").strip()))

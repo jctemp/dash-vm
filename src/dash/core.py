@@ -1,4 +1,5 @@
 import os
+import sys
 import shutil
 from dataclasses import dataclass
 
@@ -7,6 +8,7 @@ from src.utils.command import command
 from src.utils.download import download
 from src.utils.extract import extract
 from src.utils.templater import core as core_template
+from src.utils.sudoer import prompt_sudo
 
 from rich.progress import Console
 from rich.traceback import install as install_traceback
@@ -28,6 +30,10 @@ def core(data: Dash) -> None:
     Downloads and installs layer 1 on localhost
     """
 
+    if prompt_sudo() != 0:
+        print("You must run this as root")
+        sys.exit(1)
+
     with Console().status("Installing Layer 1", spinner="arc") as console:
 
         # currently hardcoded but should be dynamic in the future
@@ -44,9 +50,7 @@ def core(data: Dash) -> None:
 
         download(url, filename)
         extract(filename)
-        console.stop()
         command("sudo install -t /usr/local/bin dashcore-*/bin/*")
-        console.start()
 
         os.chdir("..")
         shutil.rmtree(working)
@@ -70,6 +74,3 @@ def core(data: Dash) -> None:
                     values[key] = "{}={}".format(key, value)
 
         core_template(dash_conf, "./dash.conf", values)
-
-
-core(Dash(externalip="10.0.0.10"))
