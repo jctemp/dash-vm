@@ -12,7 +12,7 @@ def unpack_response(response: any, throw_exception: bool = True) -> any:
         return response.json()["error"]
 
 
-def pack_payload(method: str, params=None) -> dict:
+def pack_request(method: str, params=None) -> dict:
     if params is None:
         params = []
     payload = {

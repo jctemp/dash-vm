@@ -1,1 +1,1 @@
-__all__ = ["client", "exception", "packing"]
+__all__ = ["client", "exception", "packing", "commands"]
