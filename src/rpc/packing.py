@@ -1,6 +1,4 @@
-import requests
-
-from exception import RpcException
+from src.rpc.exception import RpcException
 
 
 def unpack_response(response: any, throw_exception: bool = True) -> any:
@@ -18,7 +16,7 @@ def pack_request(method: str, params=None) -> dict:
     payload = {
         "method": method,
         "params": params,
-        "jsonrpc": "2.0",
+        "jsonrpc": "1.0",
         "id": 0
     }
 

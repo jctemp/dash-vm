@@ -4,6 +4,7 @@ from netifaces import interfaces, ifaddresses, AF_INET
 def addresses() -> list:
     """
     Finds the IP address of the current machine.
+    @return list of tuples (name, ip)
     """
 
     address_list = []

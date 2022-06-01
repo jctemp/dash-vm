@@ -2,8 +2,7 @@ import requests
 import json
 
 from requests import Response
-
-from exception import RpcException
+from src.rpc.exception import RpcException
 
 
 class Client:
@@ -12,8 +11,8 @@ class Client:
                  password: str = "password"):
         self.username = username
         self.password = password
-        self.url = f"https://{host}:{port}"
-        self.headers = {'content-type': 'application/json', 'Authorization': f"Basic {self.username}:{self.password}"}
+        self.url = f"http://{host}:{port}"  # change to https if you use rpc over internet
+        self.headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
 
     def request(self, payload: dict, wallet_name: str = None) -> Response:
         """
@@ -24,7 +23,7 @@ class Client:
 
         url = self.url
         if wallet_name:
-            url = f"{self.url}/{wallet_name}"
+            url = f"{self.url}/wallet/{wallet_name}"
 
         try:
             return requests.post(url, data=json.dumps(payload), headers=self.headers,

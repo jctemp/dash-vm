@@ -17,18 +17,29 @@ install_traceback()
 
 
 @dataclass
-class Dash:
+class CoreData:
     externalip: str = None
     sporkaddr: str = None
     sporkkey: str = None
     masternodeblsprivkey: str = None
-    addnode: list[str] = None
+    addnode: list = None
 
 
-def core(data: Dash) -> None:
+def core(data: CoreData) -> None:
     """
     Downloads and installs layer 1 on localhost
     """
+
+    already_installed = True
+
+    try:
+        command("which dashd")
+    except AssertionError:
+        already_installed = False
+
+    if already_installed:
+        print("Dash Core is already installed")
+        return
 
     if prompt_sudo() != 0:
         print("You must run this as root")
@@ -43,7 +54,10 @@ def core(data: Dash) -> None:
         working = os.path.expanduser("./tmp")
 
         if os.path.exists(working):
-            shutil.rmtree(working)
+            try:
+                shutil.rmtree(working)
+            except OSError:
+                pass
 
         os.mkdir(working)
         os.chdir(working)
@@ -53,12 +67,18 @@ def core(data: Dash) -> None:
         command("sudo install -t /usr/local/bin dashcore-*/bin/*")
 
         os.chdir("..")
-        shutil.rmtree(working)
+        try:
+            shutil.rmtree(working)
+        except OSError:
+            pass
 
         target = os.path.expanduser("~/.dashcore")
 
         if os.path.exists(target):
-            shutil.rmtree(target)
+            try:
+                shutil.rmtree(target)
+            except OSError:
+                pass
 
         os.mkdir(target)
         os.chdir(target)

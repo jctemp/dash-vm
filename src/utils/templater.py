@@ -18,6 +18,8 @@ def core(src_file: str, dest_file: str, values: dict):
     else:
         content = src_file
 
+    values = {key: value for key, value in values.items() if value is not None}
+
     s = TemplateHash(content)
 
     content = s.safe_substitute(values)

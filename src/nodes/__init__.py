@@ -1,1 +1,1 @@
-__all__ = ["seed"]
+__all__ = ["seed", "core"]
