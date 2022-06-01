@@ -101,5 +101,14 @@ def generate_collateral(c: Client) -> tuple:
     # 5. unload wallet to allow normal rpc usage
     c.request(pack_request("unloadwallet", [wallet]))
 
+    # 6. get private key
+    key = unpack_response(c.request(pack_request("dumpprivkey", [address])))
+
     # 6. save address with transaction hash
-    return address, txid
+    return address, txid, key
+
+
+def sync(c: Client) -> None:
+    c.request(pack_request("mnsync", ["reset"]))
+    while unpack_response(c.request(pack_request("mnsync", ["status"])))["IsSynced"] == False:
+        c.request(pack_request("mnsync", ["next"]))

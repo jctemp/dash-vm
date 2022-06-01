@@ -5,7 +5,7 @@
 BOX_IMAGE = "ubuntu/focal64"
 
 # Set the amount of nodes to create with seed node
-NETWORK_SIZE = 0
+NETWORK_SIZE = 7
 
 Vagrant.configure("2") do |config|
 

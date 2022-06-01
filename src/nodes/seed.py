@@ -1,11 +1,12 @@
 import os.path
-from dataclasses import dataclass
 import json
+from pathlib import Path
 
 from rich.prompt import IntPrompt
+from rich.pretty import pprint
 
 from src.rpc.client import Client
-from src.rpc.commands import generate_spork, generate_platform_keys
+from src.rpc.commands import generate_spork, generate_platform_keys, generate_collateral, sync
 from src.utils import templater
 
 from rich.progress import Console
@@ -14,48 +15,44 @@ from rich.traceback import install as install_traceback
 install_traceback()
 
 
-@dataclass
-class SeedData:
-    pass
-
-
-def seed(data: SeedData) -> None:
+def seed() -> None:
 
     mn_count = IntPrompt.ask("Masternode count: ", default=3)
 
-    with Console().status("Preparing Devnet", spinner="arc") as console:
+    with Console().status("Generating Devnet Data", spinner="arc") as console:
         client = Client()
 
-        Console().print("Generating spork address and key")
-        spork_address, spork_key = generate_spork(client)
+        sync(client)
 
-        Console().print("Generating platform keys")
+        spork_address, spork_key = generate_spork(client)
         platform_keys, key_names = generate_platform_keys(client)
 
-        Console().print("Saving data")
-        with open("spork", "w") as f:
-            f.write(json.dumps({spork_address: spork_key}, indent=4))
-
-        with open("platform_keys", "w") as f:
-            f.write(json.dumps({key_names[0]: platform_keys[key_names[0]],
-                                key_names[1]: platform_keys[key_names[1]],
-                                key_names[2]: platform_keys[key_names[2]],
-                                key_names[3]: platform_keys[key_names[3]]}, indent=4))
-
         target = os.path.expanduser("~/.dashcore/dash.conf")
+        templater.core(target, target,{
+            "sporkaddr": f"sporkaddr={spork_address}",
+            "sporkkey": f"sporkkey={spork_key}"})
 
-        # TODO: set spork key and address
-        templater.core(target, target, {})
+        spork = {"address": spork_address, "key": spork_key}
+        platform = {key_names[0]: platform_keys[key_names[0]],
+                    key_names[1]: platform_keys[key_names[1]],
+                    key_names[2]: platform_keys[key_names[2]],
+                    key_names[3]: platform_keys[key_names[3]]}
 
+        collaterals = {}
         for i in range(mn_count):
+            collateral_address, collateral_hash, collateral_key = generate_collateral(client)
+            collaterals[i] = {"address": collateral_address, "hash": collateral_hash, "key": collateral_key}
 
+        # write to file
+        with open(os.path.expanduser("./spork.json"), "w") as f:
+            f.write(json.dumps(spork, indent=4))
 
+        with open(os.path.expanduser("./platform.json"), "w") as f:
+            f.write(json.dumps(platform, indent=4))
 
-            # 1. generate blocks to get funds until there is 1000 Dash per masternode
-            # 2. create an address
-            # 3. send money to the address
-            # 4. save address with transaction hash
-            pass
+        with open(os.path.expanduser("./collaterals.json"), "w") as f:
+            f.write(json.dumps(collaterals, indent=4))
 
-    pass
-
+    pprint(spork, expand_all=True)
+    pprint(platform, expand_all=True)
+    pprint(collaterals, expand_all=True)

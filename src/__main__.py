@@ -1,19 +1,21 @@
+import json
+import time
+
 from rich import traceback
 from rich.console import Console
 from rich.text import Text
 from rich.prompt import Prompt
 from rich.table import Table
 
-import src
+from src.rpc.client import Client
+from src.rpc.packing import unpack_response, pack_request
 from src.utils.addresses import addresses
+from src.utils.command import command
 
 from src.nodes.core import core
 from src.nodes.core import CoreData
-
-from src.utils.command import command
-from src.rpc.client import Client
-from src.rpc.packing import pack_request, unpack_response
-from src.rpc.commands import generate_collateral, generate_platform_keys, generate_spork
+from src.nodes.seed import seed
+from src.nodes.masternode import masternode
 
 traceback.install()
 
@@ -50,42 +52,25 @@ def menu(options: dict) -> None:
     externalip = Prompt.ask("externalip")
     data.externalip = externalip if externalip else None
 
-    if node_type == "masternode":
+    if node_type != "seednode":
         sporkaddr = Prompt.ask("sporkaddr")
         data.sporkaddr = sporkaddr if sporkaddr else None
 
-        sporkkey = Prompt.ask("sporkkey")
-        data.sporkkey = sporkkey if sporkkey else None
-
-        masternodeblsprivkey = Prompt.ask("masternodeblsprivkey")
-        data.masternodeblsprivkey = masternodeblsprivkey if masternodeblsprivkey else None
-
         addnode = Prompt.ask("addnode")
-        data.addnode = addnode if addnode else None
-
-    elif node_type == "fullnode":
-
-        sporkaddr = Prompt.ask("sporkaddr")
-        data.sporkaddr = sporkaddr if sporkaddr else None
-
-        sporkkey = Prompt.ask("sporkkey")
-        data.sporkkey = sporkkey if sporkkey else None
-
-        addnode = Prompt.ask("addnode")
-        data.addnode = addnode if addnode else None
+        data.addnode = f"{addnode}:19999" if addnode else None
 
     core(data)
+    command("dashd")
+    time.sleep(1)
 
-    # seed()
+    if node_type == "seednode":
+        seed()
+    elif node_type == "masternode":
+        masternode(data)
 
 
-# menu({
-#     "seednode": "inital node to setup a devnet",
-#     "masternode": "create a masternode for a devnet",
-#     "fullnode": "vanilla dash fullnode"
-# })
-
-c = Client()
-# print(generate_collateral(c))
-print(generate_platform_keys(c))
-print(generate_spork(c))
+menu({
+    "seednode": "inital node to setup a devnet",
+    "masternode": "create a masternode for a devnet",
+    "fullnode": "vanilla dash fullnode"
+})
