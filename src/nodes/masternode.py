@@ -2,19 +2,21 @@ import os.path
 import json
 import time
 
-from rich.pretty import pprint
-from rich.prompt import Prompt, Confirm
+from src.nodes.core import CoreData
 
 from src.rpc.client import Client
 from src.rpc.commands import sync
 from src.rpc.packing import unpack_response, pack_request
+
+from src.utils.command import command
 from src.utils import templater
 
+from rich.pretty import pprint
+from rich.prompt import Prompt, Confirm
 from rich.progress import Console
 from rich.traceback import install as install_traceback
 
-from src.nodes.core import CoreData
-from src.utils.command import command
+
 
 install_traceback()
 
@@ -125,5 +127,6 @@ def masternode(data: CoreData):
 
     pprint(masternode_data)
 
-def sentinel() -> None:
 
+def sentinel() -> None:
+    pass

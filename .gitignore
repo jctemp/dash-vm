@@ -2,6 +2,7 @@
 .vagrant/
 .vscode/
 venv/
+tmp/
 
 textual.log
 *.pyc

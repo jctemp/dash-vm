@@ -1,7 +1,6 @@
 import requests
 import json
 
-from requests import Response
 from src.rpc.exception import RpcException
 
 
@@ -14,7 +13,7 @@ class Client:
         self.url = f"http://{host}:{port}"  # change to https if you use rpc over internet
         self.headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
 
-    def request(self, payload: dict, wallet_name: str = None) -> Response:
+    def request(self, payload: dict, wallet_name: str = None) -> requests.Response:
         """
         Send request to RPC server
         @param payload: data which is sent to dashd

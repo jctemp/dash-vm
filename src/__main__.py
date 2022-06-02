@@ -3,6 +3,7 @@ import time
 
 from rich import traceback
 from rich.console import Console
+from rich.pretty import pprint
 from rich.text import Text
 from rich.prompt import Prompt
 from rich.table import Table
@@ -67,7 +68,6 @@ def menu(options: dict) -> None:
         seed()
     elif node_type == "masternode":
         masternode(data)
-
 
 menu({
     "seednode": "inital node to setup a devnet",
